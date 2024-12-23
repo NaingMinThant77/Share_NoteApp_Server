@@ -1,6 +1,8 @@
 const express = require("express")
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const mongoose = require("mongoose")
+require("dotenv").config();
 
 const app = express();
 
@@ -9,9 +11,12 @@ app.use(bodyParser.json());
 app.use(cors())
 
 // routes
-const postRoutes = require("./routes/post");
-app.use(postRoutes);
+const noteRoute = require("./routes/note")
+app.use(noteRoute)
 
-app.listen(8080, () => {
-    console.log("Server is running on port 8080");
-});
+mongoose.connect(process.env.MONGO_URL).then(_ => {
+    app.listen(8080)
+    console.log("Connect to database & running on port: 8080")
+}).catch(err => {
+    console.log(err)
+})
