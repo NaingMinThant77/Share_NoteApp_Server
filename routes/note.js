@@ -13,4 +13,16 @@ router.post("/create", [
     body("content").trim().isLength({ min: 5 }).withMessage("Content is too short!")
 ], noteController.createNote)
 
+// GET / notes/:id
+router.get("/notes/:id", noteController.getNote)
+
+// DELETE / notes/:id
+router.delete("/delete/:id", noteController.deleteNote);
+
+// GET / edit/:id
+router.get("/edit/:id", noteController.getOldNote)
+
+// POST / edit
+router.put("/edit", noteController.updateNote)
+
 module.exports = router;
