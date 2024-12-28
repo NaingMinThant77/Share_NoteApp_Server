@@ -31,8 +31,18 @@ exports.createNote = (req, res, next) => {
 }
 
 exports.getNotes = (req, res, next) => {
-    Note.find().sort({ createdAt: -1 }).then(notes => {
-        res.status(200).json(notes)
+    const currentPage = req.query.page || 1;
+    const parPage = 6;
+    let totalNotes;
+    let totalPages
+
+    Note.find().countDocuments().then(counts => {
+        totalNotes = counts;
+        totalPages = Math.ceil(totalNotes / parPage)
+        return Note.find().sort({ createdAt: -1 })
+            .skip((currentPage - 1) * parPage).limit(parPage)
+    }).then(notes => {
+        res.status(200).json({ notes, totalNotes, totalPages })
     }).catch(err => {
         console.log(err)
         res.status(404).json({
