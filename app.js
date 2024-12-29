@@ -37,6 +37,9 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 const noteRoute = require("./routes/note")
 app.use(noteRoute)
 
+const authRoute = require("./routes/auth")
+app.use(authRoute)
+
 mongoose.connect(process.env.MONGO_URL).then(_ => {
     app.listen(8080)
     console.log("Connect to database & running on port: 8080")
