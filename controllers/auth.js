@@ -55,7 +55,7 @@ exports.login = (req, res, next) => {
             }
             const token = jwt.sign({ email: userDoc.email, userId: userDoc._id }, process.env.JWT_KEY, { expiresIn: "1h" })
 
-            return res.status(200).json({ token, userId: userDoc._id, usermessage: "Login Success" })
+            return res.status(200).json({ token, userId: userDoc._id, user_mail: userDoc.email, usermessage: "Login Success" })
         })
     }).catch(err => {
         console.log(err)
