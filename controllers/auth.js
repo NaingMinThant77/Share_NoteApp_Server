@@ -1,5 +1,7 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken");
+require("dotenv").config()
 
 const User = require("../models//user")
 
@@ -51,7 +53,9 @@ exports.login = (req, res, next) => {
                     message: "Wrong user credentials"
                 })
             }
-            return res.status(200).json({ message: "Login Success" })
+            const token = jwt.sign({ email: userDoc.email, userId: userDoc._id }, process.env.JWT_KEY, { expiresIn: "1h" })
+
+            return res.status(200).json({ token, userId: userDoc._id, usermessage: "Login Success" })
         })
     }).catch(err => {
         console.log(err)
@@ -59,4 +63,24 @@ exports.login = (req, res, next) => {
             message: err.message
         })
     })
+}
+
+exports.checkStatus = (req, res, next) => {
+    const authHeader = req.get("Authorization");
+    if (!authHeader) {
+        return res.status(401).json({ message: "Not authenticated." })
+    }
+
+    const token = authHeader.split(' ')[1];
+    try {
+        const tokenMatch = jwt.verify(token, process.env.JWT_KEY);
+        if (!tokenMatch) {
+            return res.status(401).json({ message: "Not authenticated." })
+        }
+
+        req.userId = tokenMatch.userId;
+        return res.json("ok")
+    } catch (err) {
+        return res.status(401).json({ message: "Not authenticated." })
+    }
 }

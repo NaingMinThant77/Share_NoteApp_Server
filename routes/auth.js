@@ -26,4 +26,7 @@ router.post("/register", [
 router.post("/login", [body("email").isEmail().withMessage("Please enter a valid email!"),
 body("password").trim().isLength({ min: 4 }).withMessage("Password is too short!")], authController.login)
 
+// GET / status
+router.get("/status", authController.checkStatus)
+
 module.exports = router;

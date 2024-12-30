@@ -18,7 +18,7 @@ exports.createNote = (req, res, next) => {
 
     const cover_image = req.file;
 
-    Note.create({ title, content, cover_image: cover_image ? cover_image.path : "" }).then(_ => {
+    Note.create({ title, content, cover_image: cover_image ? cover_image.path : "", creater: req.userId }).then(_ => {
         res.status(201).json({
             message: "Note Created"
         })
@@ -32,7 +32,7 @@ exports.createNote = (req, res, next) => {
 
 exports.getNotes = (req, res, next) => {
     const currentPage = req.query.page || 1;
-    const parPage = 6;
+    const parPage = 8;
     let totalNotes;
     let totalPages
 
@@ -53,7 +53,7 @@ exports.getNotes = (req, res, next) => {
 
 exports.getNote = (req, res, next) => {
     const { id } = req.params;
-    Note.findById(id).then(note => {
+    Note.findById(id).populate("creater", "username").then(note => {
         res.status(200).json(note);
     }).catch(err => {
         console.log(err)
