@@ -5,6 +5,6 @@
 
 ## Deployment
 
-To run in app
+To test Api (json data) 
 ```bash
-  nodemon app.js / node app.js
+  https://share-noteapp-server.onrender.com/notes
